@@ -1,0 +1,109 @@
+let images = [];
+let index = 0;
+let liked = [];
+
+const img = document.getElementById("img");
+const loadBtn = document.getElementById("loadBtn");
+const input = document.getElementById("imageInput");
+
+const yes = document.getElementById("yes");
+const no = document.getElementById("nope");
+const undo = document.getElementById("undo");
+
+const copyBtn = document.getElementById("copy");
+const downloadBtn = document.getElementById("download");
+
+function show() {
+  if (!images[index]) {
+    img.src = "";
+    alert("Done!");
+    return;
+  }
+  img.src = images[index];
+}
+
+loadBtn.onclick = () => {
+  const raw = input.value.trim();
+  if (!raw) return alert("Paste image URLs first.");
+
+  const limit = parseInt(document.getElementById("limit").value) || 50;
+  images = raw.split("\n").map(x => x.trim()).filter(Boolean).slice(0, limit);
+  index = 0;
+  liked = [];
+  show();
+};
+
+function swipe(dir) {
+  if (!images[index]) return;
+
+  if (dir === "right") liked.push(images[index]);
+
+  index++;
+  show();
+}
+
+yes.onclick = () => swipe("right");
+no.onclick = () => swipe("left");
+
+undo.onclick = () => {
+  if (index === 0) return;
+  index--;
+  show();
+};
+
+copyBtn.onclick = () => {
+  navigator.clipboard.writeText(liked.join("\n"));
+  alert("Copied!");
+};
+
+downloadBtn.onclick = () => {
+  const blob = new Blob([liked.join("\n")], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "images.txt";
+  a.click();
+};
+
+window.addEventListener("message", e => {
+  if (!e.data || !e.data.images) return;
+  document.getElementById("imageInput").value = e.data.images.join("\n");
+});
+
+let startX = 0;
+let currentX = 0;
+
+const card = document.getElementById("card");
+
+card.addEventListener("touchstart", e => {
+  startX = e.touches[0].clientX;
+});
+
+card.addEventListener("touchmove", e => {
+  currentX = e.touches[0].clientX;
+  const dx = currentX - startX;
+  card.style.transform = `translateX(${dx}px) rotate(${dx / 20}deg)`;
+});
+
+card.addEventListener("touchend", () => {
+  if (Math.abs(currentX - startX) > 100) {
+    swipe(currentX > startX ? "right" : "left");
+  } else {
+    card.style.transition = "0.3s";
+    card.style.transform = "translateX(0)";
+    setTimeout(() => card.style.transition = "", 300);
+  }
+});
+
+function swipe(dir) {
+  card.style.transition = "0.3s";
+  card.style.transform =
+    dir === "right"
+      ? "translateX(120vw) rotate(20deg)"
+      : "translateX(-120vw) rotate(-20deg)";
+  setTimeout(() => {
+    card.style.transition = "";
+    card.style.transform = "none";
+    nextImage();
+  }, 300);
+}
+

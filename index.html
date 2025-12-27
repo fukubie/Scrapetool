@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Image Review Tool</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dark">
+
+<header>
+  <h1>Image Review Tool</h1>
+  <p>Paste image URLs • Swipe • Export</p>
+</header>
+
+<section class="input-box">
+  <textarea id="imageInput" placeholder="Paste image URLs here (one per line)"></textarea>
+
+  <div class="controls">
+    <input id="limit" type="number" placeholder="How many to review" value="20">
+    <button id="loadBtn">Load Images</button>
+  </div>
+</section>
+
+<section id="viewer">
+  <div id="card">
+    <img id="img" />
+  </div>
+</section>
+
+<div class="actions">
+  <button id="nope">❌</button>
+  <button id="undo">↩</button>
+  <button id="yes">❤️</button>
+</div>
+
+<div class="export">
+  <button id="copy">📋 Copy Links</button>
+  <button id="download">⬇ Download TXT</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
