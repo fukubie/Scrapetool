@@ -29,7 +29,7 @@ Turn Bing search results into a personal image library in minutes. Scrape images
 3. Click **Load unpacked** → select your extension folder  
 4. Open **https://www.bing.com/images** and start scraping  
 
-[Download Extension (ZIP)]()
+[Download Extension (ZIP)](https://github.com/fukubie/bing-image-scraper-extension/releases/latest/download/bing-scraper.zip)
 
 ---
 
