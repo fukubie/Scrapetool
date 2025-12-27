@@ -40,7 +40,7 @@ Turn Bing search results into a personal image library in minutes. Scrape images
 4. Use **Undo** if you change your mind  
 5. Copy or download the kept image links  
 
-[Visit the Website]([https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/](https://fukubie.github.io/Scrapetool/))
+[Visit the Website](https://fukubie.github.io/Scrapetool/)
 
 ---
 
