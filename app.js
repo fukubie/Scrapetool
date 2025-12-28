@@ -17,16 +17,39 @@ const undo = document.getElementById("undo");
 const copyBtn = document.getElementById("copy");
 const downloadBtn = document.getElementById("download");
 
-const card = document.getElementById("card");
 let startX = 0;
 
-// Create counters dynamically
+// ---------- COUNTERS ----------
+const card = document.getElementById("card");
+
+// Progress counter
 const counter = document.createElement("div");
 counter.id = "counter";
+counter.style.position = "absolute";
+counter.style.bottom = "10px";
+counter.style.left = "50%";
+counter.style.transform = "translateX(-50%)";
+counter.style.background = "rgba(0,0,0,0.5)";
+counter.style.color = "#fff";
+counter.style.padding = "4px 10px";
+counter.style.borderRadius = "10px";
+counter.style.fontSize = "14px";
+counter.style.fontWeight = "bold";
+card.style.position = "relative";
 card.appendChild(counter);
 
+// Liked counter
 const likedCounter = document.createElement("div");
 likedCounter.id = "likedCounter";
+likedCounter.style.position = "absolute";
+likedCounter.style.top = "10px";
+likedCounter.style.right = "10px";
+likedCounter.style.background = "rgba(255,0,0,0.7)";
+likedCounter.style.color = "#fff";
+likedCounter.style.padding = "4px 8px";
+likedCounter.style.borderRadius = "10px";
+likedCounter.style.fontSize = "14px";
+likedCounter.style.fontWeight = "bold";
 card.appendChild(likedCounter);
 
 // ---------- LOAD IMAGE SAFELY ----------
@@ -50,7 +73,6 @@ async function show() {
     return;
   }
 
-  // Display counter correctly
   counter.textContent = `Image ${index + 1} / ${userLimit}`;
   likedCounter.textContent = `Liked: ${liked.length}`;
 
@@ -63,35 +85,26 @@ async function show() {
   img.src = blobUrl;
 }
 
-
-
 // ---------- LOAD BUTTON ----------
 loadBtn.onclick = () => {
   const raw = input.value.trim();
   if (!raw) return alert("Paste image URLs first");
 
-  // Split by newlines ONLY, trim each line, and remove empty lines
-  images = raw.split(/\r?\n/)
-              .map(url => url.trim())
-              .filter(Boolean);
+  images = raw.split(/\r?\n/).map(url => url.trim()).filter(Boolean);
 
-  // Check limit input
   let limit = parseInt(limitInput.value);
   if (isNaN(limit) || limit <= 0) {
     return alert("Please enter a positive number for the limit.");
   }
 
-  // Apply limit
   userLimit = Math.min(limit, images.length);
 
-  // Reset index and liked array
+  // Reset index and liked array BEFORE loading
   index = 0;
   liked = [];
 
-  // Show first image
   show();
 };
-
 
 // ---------- SWIPE ----------
 function swipe(direction) {
@@ -146,5 +159,3 @@ card.addEventListener("touchend", e => {
   const dx = e.changedTouches[0].clientX - startX;
   if (Math.abs(dx) > 80) swipe(dx > 0 ? "right" : "left");
 });
-
-
