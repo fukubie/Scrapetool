@@ -3,7 +3,6 @@ let index = 0;
 let liked = [];
 
 const img = document.getElementById("img");
-img.referrerPolicy = "no-referrer";
 const loadBtn = document.getElementById("loadBtn");
 const input = document.getElementById("imageInput");
 
@@ -11,54 +10,53 @@ const yes = document.getElementById("yes");
 const no = document.getElementById("nope");
 const undo = document.getElementById("undo");
 
-const copyBtn = document.getElementById("copy");
-const downloadBtn = document.getElementById("download");
-
 let startX = 0;
-let currentX = 0;
 
-// ---------------- LOAD IMAGES ----------------
+// ---------- LOAD IMAGE SAFELY ----------
+async function loadImage(url) {
+  try {
+    const res = await fetch(url, { mode: "cors" });
+    const blob = await res.blob();
+    return URL.createObjectURL(blob);
+  } catch (e) {
+    console.warn("Skipped:", url);
+    return null;
+  }
+}
+
+// ---------- SHOW IMAGE ----------
+async function show() {
+  if (!images[index]) {
+    alert("Done!");
+    return;
+  }
+
+  const blobUrl = await loadImage(images[index]);
+
+  if (!blobUrl) {
+    index++;
+    return show(); // skip broken image
+  }
+
+  img.src = blobUrl;
+}
+
+// ---------- LOAD BUTTON ----------
 loadBtn.onclick = () => {
   const raw = input.value.trim();
-  if (!raw) return alert("Paste image URLs first.");
+  if (!raw) return alert("Paste image URLs first");
 
-  images = raw
-    .split("\n")
-    .map(x => x.trim())
-    .filter(Boolean);
-
+  images = raw.split(/\s+/).filter(Boolean);
   index = 0;
   liked = [];
   show();
 };
 
-// ---------------- SHOW IMAGE ----------------
-function show() {
-  if (!images[index]) {
-    img.src = "";
-    alert("Done!");
-    return;
-  }
-
-  img.src = images[index];
-  preloadNext();
-}
-
-// Preload next image
-function preloadNext() {
-  if (images[index + 1]) {
-    const preload = new Image();
-    preload.src = images[index + 1];
-  }
-}
-
-// ---------------- SWIPE LOGIC ----------------
+// ---------- SWIPE ----------
 function swipe(direction) {
   if (!images[index]) return;
 
-  if (direction === "right") {
-    liked.push(images[index]);
-  }
+  if (direction === "right") liked.push(images[index]);
 
   img.style.transition = "0.3s";
   img.style.transform =
@@ -74,51 +72,17 @@ function swipe(direction) {
   }, 300);
 }
 
-// Buttons
 yes.onclick = () => swipe("right");
 no.onclick = () => swipe("left");
 
-// Undo
-undo.onclick = () => {
-  if (index === 0) return;
-  index--;
-  show();
-};
-
-// ---------------- COPY / DOWNLOAD ----------------
-copyBtn.onclick = () => {
-  navigator.clipboard.writeText(liked.join("\n"));
-  alert("Copied!");
-};
-
-downloadBtn.onclick = () => {
-  const blob = new Blob([liked.join("\n")], { type: "text/plain" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "images.txt";
-  a.click();
-};
-
-// ---------------- TOUCH SUPPORT ----------------
+// ---------- TOUCH SUPPORT ----------
 const card = document.getElementById("card");
 
 card.addEventListener("touchstart", e => {
   startX = e.touches[0].clientX;
 });
 
-card.addEventListener("touchmove", e => {
-  currentX = e.touches[0].clientX;
-  const dx = currentX - startX;
-  card.style.transform = `translateX(${dx}px) rotate(${dx / 20}deg)`;
+card.addEventListener("touchend", e => {
+  const dx = e.changedTouches[0].clientX - startX;
+  if (Math.abs(dx) > 80) swipe(dx > 0 ? "right" : "left");
 });
-
-card.addEventListener("touchend", () => {
-  if (Math.abs(currentX - startX) > 80) {
-    swipe(currentX > startX ? "right" : "left");
-  } else {
-    card.style.transition = "0.3s";
-    card.style.transform = "translateX(0)";
-    setTimeout(() => (card.style.transition = ""), 300);
-  }
-});
-
