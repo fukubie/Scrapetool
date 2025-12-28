@@ -20,9 +20,8 @@ let startX = 0;
 
 // ---------- CARD COUNTER ----------
 const card = document.getElementById("card");
-card.style.position = "relative"; // make sure counters are inside card
+card.style.position = "relative"; 
 
-// Progress counter
 const counter = document.createElement("div");
 counter.id = "counter";
 counter.style.position = "absolute";
@@ -37,7 +36,6 @@ counter.style.fontSize = "14px";
 counter.style.fontWeight = "bold";
 card.appendChild(counter);
 
-// Liked counter
 const likedCounter = document.createElement("div");
 likedCounter.id = "likedCounter";
 likedCounter.style.position = "absolute";
@@ -65,23 +63,24 @@ async function loadImage(url) {
 
 // ---------- SHOW IMAGE ----------
 async function show() {
-  if (!images[index]) {
-    img.src = "";
-    counter.textContent = `Done! Reviewed ${index} images.`;
-    likedCounter.textContent = `Liked: ${liked.length}`;
-    return;
+  // Skip broken images automatically
+  while (index < images.length) {
+    const blobUrl = await loadImage(images[index]);
+    if (blobUrl) {
+      img.src = blobUrl;
+      counter.textContent = `Image ${index + 1} / ${images.length}`;
+      likedCounter.textContent = `Liked: ${liked.length}`;
+      return;
+    } else {
+      console.warn("Skipped broken image:", images[index]);
+      index++;
+    }
   }
 
-  counter.textContent = `Image ${index + 1} / ${images.length}`;
+  // All images reviewed
+  img.src = "";
+  counter.textContent = `Done! Reviewed ${index} images.`;
   likedCounter.textContent = `Liked: ${liked.length}`;
-
-  const blobUrl = await loadImage(images[index]);
-  if (!blobUrl) {
-    index++;
-    return show(); // skip broken image
-  }
-
-  img.src = blobUrl;
 }
 
 // ---------- LOAD BUTTON ----------
@@ -90,9 +89,7 @@ loadBtn.onclick = () => {
   if (!raw) return alert("Paste image URLs first");
 
   let limit = parseInt(limitInput.value);
-  if (isNaN(limit) || limit <= 0) {
-    return alert("Please enter a positive number for the limit.");
-  }
+  if (isNaN(limit) || limit <= 0) return alert("Enter a positive limit.");
 
   const allImages = raw.split(/\s+/).filter(Boolean);
   if (limit > allImages.length) limit = allImages.length;
@@ -105,7 +102,7 @@ loadBtn.onclick = () => {
 
 // ---------- SWIPE ----------
 function swipe(direction) {
-  if (!images[index]) return;
+  if (index >= images.length) return;
 
   if (direction === "right") liked.push(images[index]);
 
@@ -128,9 +125,14 @@ no.onclick = () => swipe("left");
 
 // ---------- UNDO ----------
 undo.onclick = () => {
-  if (index === 0) return;
-  index--;
-  show();
+  if (index > 0) {
+    index--;
+    // Remove from liked if it was liked
+    const lastImage = images[index];
+    const likedIndex = liked.indexOf(lastImage);
+    if (likedIndex !== -1) liked.splice(likedIndex, 1);
+    show();
+  }
 };
 
 // ---------- COPY / DOWNLOAD ----------
