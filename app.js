@@ -3,6 +3,7 @@ let index = 0;
 let liked = [];
 
 const img = document.getElementById("img");
+img.referrerPolicy = "no-referrer";
 const loadBtn = document.getElementById("loadBtn");
 const input = document.getElementById("imageInput");
 
@@ -120,3 +121,4 @@ card.addEventListener("touchend", () => {
     setTimeout(() => (card.style.transition = ""), 300);
   }
 });
+
