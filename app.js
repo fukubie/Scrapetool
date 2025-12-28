@@ -1,7 +1,6 @@
 let images = [];
 let index = 0;
 let liked = [];
-let userLimit = 0;
 
 const img = document.getElementById("img");
 img.referrerPolicy = "no-referrer";
@@ -17,17 +16,8 @@ const undo = document.getElementById("undo");
 const copyBtn = document.getElementById("copy");
 const downloadBtn = document.getElementById("download");
 
-const card = document.getElementById("card");
 let startX = 0;
-
-// Create counters dynamically
-const counter = document.createElement("div");
-counter.id = "counter";
-card.appendChild(counter);
-
-const likedCounter = document.createElement("div");
-likedCounter.id = "likedCounter";
-card.appendChild(likedCounter);
+const card = document.getElementById("card");
 
 // ---------- LOAD IMAGE SAFELY ----------
 async function loadImage(url) {
@@ -43,18 +33,14 @@ async function loadImage(url) {
 
 // ---------- SHOW IMAGE ----------
 async function show() {
-  if (index >= userLimit || !images[index]) {
+  if (!images[index]) {
     img.src = "";
-    counter.textContent = `Done! Reviewed ${index} images.`;
-    likedCounter.textContent = `Liked: ${liked.length}`;
+    alert("Done!");
     return;
   }
 
-  // Display counter correctly
-  counter.textContent = `Image ${index + 1} / ${userLimit}`;
-  likedCounter.textContent = `Liked: ${liked.length}`;
-
   const blobUrl = await loadImage(images[index]);
+
   if (!blobUrl) {
     index++;
     return show(); // skip broken image
@@ -63,39 +49,29 @@ async function show() {
   img.src = blobUrl;
 }
 
-
-
 // ---------- LOAD BUTTON ----------
 loadBtn.onclick = () => {
   const raw = input.value.trim();
   if (!raw) return alert("Paste image URLs first");
 
-  // Split by newlines ONLY, trim each line, and remove empty lines
-  images = raw.split(/\r?\n/)
-              .map(url => url.trim())
-              .filter(Boolean);
-
-  // Check limit input
   let limit = parseInt(limitInput.value);
   if (isNaN(limit) || limit <= 0) {
     return alert("Please enter a positive number for the limit.");
   }
 
-  // Apply limit
-  userLimit = Math.min(limit, images.length);
+  images = raw.split(/\s+/).filter(Boolean);
 
-  // Reset index and liked array
+  if (limit > images.length) limit = images.length; // show all if limit too big
+  images = images.slice(0, limit);
+
   index = 0;
   liked = [];
-
-  // Show first image
   show();
 };
 
-
 // ---------- SWIPE ----------
 function swipe(direction) {
-  if (index >= userLimit || !images[index]) return;
+  if (!images[index]) return;
 
   if (direction === "right") liked.push(images[index]);
 
@@ -146,4 +122,3 @@ card.addEventListener("touchend", e => {
   const dx = e.changedTouches[0].clientX - startX;
   if (Math.abs(dx) > 80) swipe(dx > 0 ? "right" : "left");
 });
-
