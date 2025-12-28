@@ -50,6 +50,7 @@ async function show() {
     return;
   }
 
+  // Show current image number correctly
   counter.textContent = `Image ${index + 1} / ${userLimit}`;
   likedCounter.textContent = `Liked: ${liked.length}`;
 
@@ -62,22 +63,34 @@ async function show() {
   img.src = blobUrl;
 }
 
+
 // ---------- LOAD BUTTON ----------
 loadBtn.onclick = () => {
   const raw = input.value.trim();
   if (!raw) return alert("Paste image URLs first");
 
+  // Split lines and remove empty entries
+  images = raw.split(/\s+/)
+              .map(url => url.trim())
+              .filter(Boolean);
+
+  // Check limit input
   let limit = parseInt(limitInput.value);
   if (isNaN(limit) || limit <= 0) {
     return alert("Please enter a positive number for the limit.");
   }
 
-  images = raw.split(/\s+/).filter(Boolean);
+  // Apply limit
   userLimit = Math.min(limit, images.length);
+
+  // Reset index and liked array
   index = 0;
   liked = [];
+
+  // Show first image
   show();
 };
+
 
 // ---------- SWIPE ----------
 function swipe(direction) {
@@ -132,3 +145,4 @@ card.addEventListener("touchend", e => {
   const dx = e.changedTouches[0].clientX - startX;
   if (Math.abs(dx) > 80) swipe(dx > 0 ? "right" : "left");
 });
+
