@@ -3,14 +3,53 @@ let index = 0;
 let liked = [];
 
 const img = document.getElementById("img");
+img.referrerPolicy = "no-referrer";
+
 const loadBtn = document.getElementById("loadBtn");
 const input = document.getElementById("imageInput");
+const limitInput = document.getElementById("limit");
 
 const yes = document.getElementById("yes");
 const no = document.getElementById("nope");
 const undo = document.getElementById("undo");
 
+const copyBtn = document.getElementById("copy");
+const downloadBtn = document.getElementById("download");
+
 let startX = 0;
+
+// ---------- CARD COUNTER ----------
+const card = document.getElementById("card");
+
+// Counter for progress
+const counter = document.createElement("div");
+counter.id = "counter";
+counter.style.position = "absolute";
+counter.style.bottom = "10px";
+counter.style.left = "50%";
+counter.style.transform = "translateX(-50%)";
+counter.style.background = "rgba(0,0,0,0.5)";
+counter.style.color = "#fff";
+counter.style.padding = "4px 10px";
+counter.style.borderRadius = "10px";
+counter.style.fontSize = "14px";
+counter.style.fontWeight = "bold";
+card.style.position = "relative";
+card.appendChild(counter);
+
+// Liked counter
+const likedCounter = document.createElement("div");
+likedCounter.id = "likedCounter";
+likedCounter.style.position = "absolute";
+likedCounter.style.top = "10px";
+likedCounter.style.right = "10px";
+likedCounter.style.background = "rgba(255,0,0,0.7)";
+likedCounter.style.color = "#fff";
+likedCounter.style.padding = "4px 8px";
+likedCounter.style.borderRadius = "10px";
+likedCounter.style.fontSize = "14px";
+likedCounter.style.fontWeight = "bold";
+card.appendChild(likedCounter);
 
 // ---------- LOAD IMAGE SAFELY ----------
 async function loadImage(url) {
@@ -27,12 +66,16 @@ async function loadImage(url) {
 // ---------- SHOW IMAGE ----------
 async function show() {
   if (!images[index]) {
-    alert("Done!");
+    img.src = "";
+    counter.textContent = `Done! Reviewed ${index} images.`;
+    likedCounter.textContent = `Liked: ${liked.length}`;
     return;
   }
 
-  const blobUrl = await loadImage(images[index]);
+  counter.textContent = `Image ${index + 1} / ${images.length}`;
+  likedCounter.textContent = `Liked: ${liked.length}`;
 
+  const blobUrl = await loadImage(images[index]);
   if (!blobUrl) {
     index++;
     return show(); // skip broken image
@@ -46,7 +89,16 @@ loadBtn.onclick = () => {
   const raw = input.value.trim();
   if (!raw) return alert("Paste image URLs first");
 
+  let limit = parseInt(limitInput.value);
+  if (isNaN(limit) || limit <= 0) {
+    return alert("Please enter a positive number for the limit.");
+  }
+
   images = raw.split(/\s+/).filter(Boolean);
+
+  if (limit > images.length) limit = images.length; // show all if limit too big
+  images = images.slice(0, limit);
+
   index = 0;
   liked = [];
   show();
@@ -75,9 +127,28 @@ function swipe(direction) {
 yes.onclick = () => swipe("right");
 no.onclick = () => swipe("left");
 
-// ---------- TOUCH SUPPORT ----------
-const card = document.getElementById("card");
+// ---------- UNDO ----------
+undo.onclick = () => {
+  if (index === 0) return;
+  index--;
+  show();
+};
 
+// ---------- COPY / DOWNLOAD ----------
+copyBtn.onclick = () => {
+  navigator.clipboard.writeText(liked.join("\n"));
+  alert("Copied!");
+};
+
+downloadBtn.onclick = () => {
+  const blob = new Blob([liked.join("\n")], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "images.txt";
+  a.click();
+};
+
+// ---------- TOUCH SUPPORT ----------
 card.addEventListener("touchstart", e => {
   startX = e.touches[0].clientX;
 });
