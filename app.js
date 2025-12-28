@@ -50,7 +50,7 @@ async function show() {
     return;
   }
 
-  // Show current image number correctly
+  // Display counter correctly
   counter.textContent = `Image ${index + 1} / ${userLimit}`;
   likedCounter.textContent = `Liked: ${liked.length}`;
 
@@ -64,13 +64,14 @@ async function show() {
 }
 
 
+
 // ---------- LOAD BUTTON ----------
 loadBtn.onclick = () => {
   const raw = input.value.trim();
   if (!raw) return alert("Paste image URLs first");
 
-  // Split lines and remove empty entries
-  images = raw.split(/\s+/)
+  // Split by newlines ONLY, trim each line, and remove empty lines
+  images = raw.split(/\r?\n/)
               .map(url => url.trim())
               .filter(Boolean);
 
@@ -145,4 +146,5 @@ card.addEventListener("touchend", e => {
   const dx = e.changedTouches[0].clientX - startX;
   if (Math.abs(dx) > 80) swipe(dx > 0 ? "right" : "left");
 });
+
 
