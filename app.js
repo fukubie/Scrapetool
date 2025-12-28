@@ -1,6 +1,7 @@
 let images = [];
 let index = 0;
 let liked = [];
+let userLimit = 0; // store the limit separately
 
 const img = document.getElementById("img");
 img.referrerPolicy = "no-referrer";
@@ -20,9 +21,8 @@ let startX = 0;
 
 // ---------- CARD COUNTER ----------
 const card = document.getElementById("card");
-card.style.position = "relative"; // make sure counters are inside card
+card.style.position = "relative";
 
-// Progress counter
 const counter = document.createElement("div");
 counter.id = "counter";
 counter.style.position = "absolute";
@@ -37,7 +37,6 @@ counter.style.fontSize = "14px";
 counter.style.fontWeight = "bold";
 card.appendChild(counter);
 
-// Liked counter
 const likedCounter = document.createElement("div");
 likedCounter.id = "likedCounter";
 likedCounter.style.position = "absolute";
@@ -65,14 +64,15 @@ async function loadImage(url) {
 
 // ---------- SHOW IMAGE ----------
 async function show() {
-  if (!images[index]) {
+  // stop if reached limit
+  if (index >= userLimit || !images[index]) {
     img.src = "";
     counter.textContent = `Done! Reviewed ${index} images.`;
     likedCounter.textContent = `Liked: ${liked.length}`;
     return;
   }
 
-  counter.textContent = `Image ${index + 1} / ${images.length}`;
+  counter.textContent = `Image ${index + 1} / ${userLimit}`;
   likedCounter.textContent = `Liked: ${liked.length}`;
 
   const blobUrl = await loadImage(images[index]);
@@ -94,10 +94,8 @@ loadBtn.onclick = () => {
     return alert("Please enter a positive number for the limit.");
   }
 
-  const allImages = raw.split(/\s+/).filter(Boolean);
-  if (limit > allImages.length) limit = allImages.length;
-  images = allImages.slice(0, limit);
-
+  images = raw.split(/\s+/).filter(Boolean);
+  userLimit = Math.min(limit, images.length); // set user limit correctly
   index = 0;
   liked = [];
   show();
@@ -105,7 +103,7 @@ loadBtn.onclick = () => {
 
 // ---------- SWIPE ----------
 function swipe(direction) {
-  if (!images[index]) return;
+  if (index >= userLimit || !images[index]) return;
 
   if (direction === "right") liked.push(images[index]);
 
