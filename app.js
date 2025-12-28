@@ -1,7 +1,7 @@
 let images = [];
 let index = 0;
 let liked = [];
-let userLimit = 0; // store the limit separately
+let userLimit = 0;
 
 const img = document.getElementById("img");
 img.referrerPolicy = "no-referrer";
@@ -17,37 +17,16 @@ const undo = document.getElementById("undo");
 const copyBtn = document.getElementById("copy");
 const downloadBtn = document.getElementById("download");
 
+const card = document.getElementById("card");
 let startX = 0;
 
-// ---------- CARD COUNTER ----------
-const card = document.getElementById("card");
-card.style.position = "relative";
-
+// Create counters dynamically
 const counter = document.createElement("div");
 counter.id = "counter";
-counter.style.position = "absolute";
-counter.style.bottom = "10px";
-counter.style.left = "50%";
-counter.style.transform = "translateX(-50%)";
-counter.style.background = "rgba(0,0,0,0.6)";
-counter.style.color = "#fff";
-counter.style.padding = "4px 10px";
-counter.style.borderRadius = "10px";
-counter.style.fontSize = "14px";
-counter.style.fontWeight = "bold";
 card.appendChild(counter);
 
 const likedCounter = document.createElement("div");
 likedCounter.id = "likedCounter";
-likedCounter.style.position = "absolute";
-likedCounter.style.top = "10px";
-likedCounter.style.right = "10px";
-likedCounter.style.background = "rgba(255,0,0,0.7)";
-likedCounter.style.color = "#fff";
-likedCounter.style.padding = "4px 8px";
-likedCounter.style.borderRadius = "10px";
-likedCounter.style.fontSize = "14px";
-likedCounter.style.fontWeight = "bold";
 card.appendChild(likedCounter);
 
 // ---------- LOAD IMAGE SAFELY ----------
@@ -64,7 +43,6 @@ async function loadImage(url) {
 
 // ---------- SHOW IMAGE ----------
 async function show() {
-  // stop if reached limit
   if (index >= userLimit || !images[index]) {
     img.src = "";
     counter.textContent = `Done! Reviewed ${index} images.`;
@@ -95,7 +73,7 @@ loadBtn.onclick = () => {
   }
 
   images = raw.split(/\s+/).filter(Boolean);
-  userLimit = Math.min(limit, images.length); // set user limit correctly
+  userLimit = Math.min(limit, images.length);
   index = 0;
   liked = [];
   show();
