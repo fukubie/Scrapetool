@@ -1,158 +1,86 @@
-/* ---------------- BODY ---------------- */
-body.dark {
-  background-color: #1e1e1e;
-  color: #fff;
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ---------------- HEADER ---------------- */
-header {
+body {
+  font-family: system-ui, sans-serif;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #444;
 }
 
-header h1 {
-  margin: 0;
-  font-size: 28px;
-}
+header { text-align: center; margin-bottom: 10px; }
 
-header p {
-  margin: 5px 0 0;
-  font-size: 16px;
-  color: #ccc;
-}
-
-/* ---------------- INPUT BOX ---------------- */
-.input-box {
-  margin: 20px auto;
-  max-width: 600px;
-}
-
-textarea#imageInput {
+textarea {
   width: 100%;
   height: 120px;
+  border-radius: 12px;
   padding: 10px;
+  border: none;
   font-size: 14px;
-  border-radius: 8px;
-  border: 1px solid #555;
-  background: #2a2a2a;
-  color: #fff;
-  resize: none;
 }
 
 .controls {
+  display: flex;
+  gap: 10px;
   margin-top: 10px;
 }
 
-.controls input#limit {
-  width: 100px;
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid #555;
-  background: #2a2a2a;
-  color: #fff;
+input, button {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
   font-size: 14px;
 }
 
-.controls button#loadBtn {
-  padding: 6px 12px;
-  margin-left: 8px;
-  border-radius: 6px;
-  border: none;
-  background: #007bff;
-  color: #fff;
-  font-size: 14px;
+button {
+  background: #2563eb;
+  color: white;
   cursor: pointer;
 }
 
-.controls button#loadBtn:hover {
-  background: #0056b3;
-}
-
-/* ---------------- VIEWER ---------------- */
 #viewer {
-  margin: 20px 0;
+  margin-top: 20px;
+  width: 90vw;
+  max-width: 420px;
+  height: 60vh;
+  position: relative;
 }
 
 #card {
-  display: inline-block;
-  max-width: 90%;
-  max-height: 70vh;
-  overflow: hidden;
-  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+  background: #111;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  transition: 0.3s ease;
 }
 
 #card img {
   max-width: 100%;
   max-height: 100%;
-  border-radius: 10px;
-  user-select: none;
-  pointer-events: none;
-  transition: transform 0.3s ease;
+  border-radius: 12px;
 }
 
-/* ---------------- ACTION BUTTONS ---------------- */
 .actions {
-  margin: 20px 0;
+  display: flex;
+  gap: 30px;
+  margin-top: 20px;
 }
 
 .actions button {
   font-size: 24px;
-  padding: 10px 15px;
-  margin: 0 10px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  background: #444;
-  color: #fff;
-  transition: background 0.2s;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
 }
 
-.actions button:hover {
-  background: #666;
-}
-
-/* ---------------- EXPORT BUTTONS ---------------- */
 .export {
-  margin-bottom: 30px;
-}
-
-.export button {
-  padding: 8px 14px;
-  margin: 0 5px;
-  border-radius: 6px;
-  border: none;
-  background: #28a745;
-  color: #fff;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.2s;
-}
-
-.export button:hover {
-  background: #1e7e34;
-}
-
-/* ---------------- FOOTER ---------------- */
-footer {
-  color: #ccc;
-}
-
-footer button {
-  background: #FFDD00;
-  color: #000;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-footer button:hover {
-  transform: scale(1.05);
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
 }
