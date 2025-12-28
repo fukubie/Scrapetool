@@ -17,7 +17,39 @@ const copyBtn = document.getElementById("copy");
 const downloadBtn = document.getElementById("download");
 
 let startX = 0;
+
+// ---------- CARD COUNTER ----------
 const card = document.getElementById("card");
+card.style.position = "relative"; // make sure counters are inside card
+
+// Progress counter
+const counter = document.createElement("div");
+counter.id = "counter";
+counter.style.position = "absolute";
+counter.style.bottom = "10px";
+counter.style.left = "50%";
+counter.style.transform = "translateX(-50%)";
+counter.style.background = "rgba(0,0,0,0.6)";
+counter.style.color = "#fff";
+counter.style.padding = "4px 10px";
+counter.style.borderRadius = "10px";
+counter.style.fontSize = "14px";
+counter.style.fontWeight = "bold";
+card.appendChild(counter);
+
+// Liked counter
+const likedCounter = document.createElement("div");
+likedCounter.id = "likedCounter";
+likedCounter.style.position = "absolute";
+likedCounter.style.top = "10px";
+likedCounter.style.right = "10px";
+likedCounter.style.background = "rgba(255,0,0,0.7)";
+likedCounter.style.color = "#fff";
+likedCounter.style.padding = "4px 8px";
+likedCounter.style.borderRadius = "10px";
+likedCounter.style.fontSize = "14px";
+likedCounter.style.fontWeight = "bold";
+card.appendChild(likedCounter);
 
 // ---------- LOAD IMAGE SAFELY ----------
 async function loadImage(url) {
@@ -35,12 +67,15 @@ async function loadImage(url) {
 async function show() {
   if (!images[index]) {
     img.src = "";
-    alert("Done!");
+    counter.textContent = `Done! Reviewed ${index} images.`;
+    likedCounter.textContent = `Liked: ${liked.length}`;
     return;
   }
 
-  const blobUrl = await loadImage(images[index]);
+  counter.textContent = `Image ${index + 1} / ${images.length}`;
+  likedCounter.textContent = `Liked: ${liked.length}`;
 
+  const blobUrl = await loadImage(images[index]);
   if (!blobUrl) {
     index++;
     return show(); // skip broken image
@@ -59,10 +94,9 @@ loadBtn.onclick = () => {
     return alert("Please enter a positive number for the limit.");
   }
 
-  images = raw.split(/\s+/).filter(Boolean);
-
-  if (limit > images.length) limit = images.length; // show all if limit too big
-  images = images.slice(0, limit);
+  const allImages = raw.split(/\s+/).filter(Boolean);
+  if (limit > allImages.length) limit = allImages.length;
+  images = allImages.slice(0, limit);
 
   index = 0;
   liked = [];
