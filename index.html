@@ -15,7 +15,7 @@
 </header>
 
 <section class="input-box">
-  <textarea id="imageInput" placeholder="Paste image URLs here (one per line)"></textarea>
+  <textarea id="imageInput" placeholder="Paste image URLs here (one per line)" spellcheck="true"></textarea>
 
   <div class="controls">
     <input id="limit" type="number" placeholder="How many to review" value="20">
@@ -26,7 +26,6 @@
 <section id="viewer">
   <div id="card">
     <img id="img" />
-    <!-- Counters will be appended by JS -->
   </div>
 </section>
 
@@ -43,7 +42,18 @@
 
 <footer style="text-align:center; margin-top:40px; padding:20px;">
   <a href="https://www.buymeacoffee.com/YOUR_USERNAME" target="_blank">
-    <button class="coffee-btn">
+    <button style="
+      background: #FFDD00; 
+      color: #000; 
+      border: none; 
+      border-radius: 8px; 
+      padding: 10px 20px; 
+      font-size: 16px; 
+      font-weight: bold; 
+      cursor: pointer;
+      transition: transform 0.2s;"
+      onmouseover="this.style.transform='scale(1.05)'" 
+      onmouseout="this.style.transform='scale(1)'">
       Buy Me a Coffee ☕
     </button>
   </a>
