@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="dark">
+<body>
 
 <header>
   <h1>Image Review Tool</h1>
@@ -25,15 +25,18 @@
 
 <section id="viewer">
   <div id="card">
-    <img id="img" />
+    <span class="card-overlay nope" aria-hidden="true">Nope</span>
+    <span class="card-overlay like" aria-hidden="true">Like</span>
+    <img id="img" alt="" />
   </div>
 </section>
 
 <div class="actions">
-  <button id="nope">❌</button>
-  <button id="undo">↩</button>
-  <button id="yes">❤️</button>
+  <button id="nope" type="button" title="Discard (←)">❌</button>
+  <button id="undo" type="button" title="Undo">↩</button>
+  <button id="yes" type="button" title="Like (→)">❤️</button>
 </div>
+<p class="keyboard-hint"><kbd>←</kbd> Nope &nbsp; <kbd>→</kbd> Like</p>
 
 <div class="export">
   <button id="copy">📋 Copy Links</button>
